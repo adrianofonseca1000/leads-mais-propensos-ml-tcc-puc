@@ -1,32 +1,93 @@
-﻿# PUC - TCC Pós Graduação em Data Science and Big Data:
- 
-- Com o objetivo de estreitar a relação entre online e offline, aprimorando, 
-assim, a experiência dos Leads (alguém que forneceu seus dados de contato) e de 
-expandir do multichannel para omnichannel como estratégia de uso simultâneo e 
-interligado de diferentes canais de comunicação da minha organização, o presente
-estudo busca identificar e atribuir um score de probabilidade para Leads receptivos, 
-através de suas características, utilizando data science.
+﻿# Análise Preditiva de Leads - TCC PUC
 
-- O presente projeto tem como desafio propor uma abordagem preditiva para
-identificar a qual classe um Lead pertence, com o objetivo de prever se o Lead
-estaria ou não interessado na compra de planos de internet.
+## Descrição
 
-- (Why?) Por que esse problema é importante?
-Com a solução, os times de vendas, planejamento e marketing esperam
-conseguir priorizar os Leads com maior interesse nos planos de internet.
-- (Who?) De quem são os dados analisados? 
-Os dados analisados são de uma empresa privada.
-- (What?): Quais os objetivos com essa análise? O que iremos analisar? 
-O objetivo é analisar o comportamento preditivo dos Leads através das suas
-características de recarga e serviços enriquecidas.
-- (Where?): Trata dos aspectos geográficos e logísticos de sua análise.
-O estudo é realizado com Leads espalhados em todo território brasileiro.
-- (When?): Qual o período está sendo analisado? 
-Podemos considerar o terceiro e quarto trimestre do ano 2021.
+Este projeto foi desenvolvido como Trabalho de Conclusão de Curso da Pós-Graduação em Data Science and Big Data da PUC. 
+O objetivo é identificar e atribuir um score de probabilidade para Leads receptivos à compra de planos de internet, 
+utilizando técnicas de Data Science e Machine Learning.
 
-# Tecnologias embargadas:
+Com a solução, os times de vendas, planejamento e marketing podem priorizar os Leads com maior interesse nos planos de internet.
 
-- Coleta de Dados via Python e SQL;
-- Processamento, Tratamento e Dataviz das features do dataset via Python;
-- Análise e Exploração dos dados via Python;
-- Implementação de modelos de Machine Learning e metricas via Python;
+## Estrutura do Projeto
+
+O projeto foi organizado de forma modular em uma estrutura de pacotes Python:
+
+```
+├── src/                    # Código fonte
+│   ├── data/               # Módulos para coleta de dados
+│   ├── features/           # Módulos para processamento e engenharia de features
+│   ├── models/             # Módulos para treinamento e avaliação de modelos
+│   └── visualization/      # Módulos para visualização de dados
+├── main.py                 # Script principal para executar o pipeline completo
+├── requirements.txt        # Dependências do projeto
+└── .env.example            # Exemplo de configuração de variáveis de ambiente
+```
+
+## Instalação
+
+1. Clone o repositório:
+```
+git clone <url-do-repositorio>
+cd <diretorio-do-projeto>
+```
+
+2. Crie e ative um ambiente virtual:
+```
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+```
+
+3. Instale as dependências:
+```
+pip install -r requirements.txt
+```
+
+4. Configure as variáveis de ambiente:
+```
+cp .env.example .env
+```
+Edite o arquivo `.env` com suas credenciais de banco de dados.
+
+## Uso
+
+Para executar o pipeline completo:
+```
+python main.py
+```
+
+Para executar etapas específicas:
+```
+python main.py collect    # Apenas coleta de dados
+python main.py process    # Apenas processamento de dados
+python main.py visualize  # Apenas visualização de dados
+python main.py train      # Apenas treinamento de modelos
+```
+
+Para fazer predições com novos dados:
+```
+python -m src.models.prediction <arquivo_entrada> <arquivo_saida>
+```
+
+## Pipeline de Análise
+
+O projeto segue um pipeline de análise preditiva com as seguintes etapas:
+
+1. **Coleta de Dados**: Conexão ao banco de dados e extração de informações de contato, recargas e serviços dos Leads.
+
+2. **Processamento e Tratamento dos Dados**: Limpeza, transformação e preparação dos dados para modelagem.
+
+3. **Visualização e Análise Exploratória**: Geração de visualizações para compreensão dos padrões nos dados.
+
+4. **Treinamento e Avaliação de Modelos**: Treinamento de diferentes modelos de classificação (Random Forest, SVM, Naive Bayes) e avaliação de desempenho.
+
+## Tecnologias Utilizadas
+
+- Coleta de Dados: Python, SQL, pyodbc
+- Processamento e Tratamento: pandas, numpy, scikit-learn
+- Visualização: matplotlib, seaborn
+- Modelagem: scikit-learn
+
+## Dados Analisados
+
+Este estudo considera Leads espalhados pelo território brasileiro durante o terceiro e quarto trimestre do ano 2021.
