@@ -150,5 +150,5 @@ Developed as part of a postgraduate thesis at PUC.
 ---
 
 <p align="center">
-  Made with ❤️ by your name
+  Made with ❤️ by Adriano Fnseca
 </p>
