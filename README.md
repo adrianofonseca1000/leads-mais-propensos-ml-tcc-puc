@@ -6,7 +6,12 @@
 
 > 🚀 Machine Learning system to predict the likelihood of leads converting to internet plan customers.
 
-![Project Banner](https://via.placeholder.com/1200x300/5352ed/ffffff?text=Lead+Score+Prediction)
+<!-- 
+To add a banner image:
+1. Add your image to the 'images' directory
+2. Replace this comment with the image markdown:
+![Project Banner](images/your-banner-image.png)
+-->
 
 ## Overview
 
@@ -152,3 +157,22 @@ Developed as part of a postgraduate thesis at PUC.
 <p align="center">
   Made with ❤️ by Adriano Fonseca
 </p>
+
+---
+
+## Adding a Custom Banner
+
+To add a custom banner to the project:
+
+1. Create an image with dimensions around 1200x300 pixels
+2. Save the image file to the `images` directory
+3. Update the README.md file to reference the image:
+   ```markdown
+   ![Project Banner](images/your-banner-image.png)
+   ```
+4. Replace the HTML comment at the top of this README with the image markdown above
+
+Recommended tools for creating a banner:
+- [Canva](https://www.canva.com/) - Free online design tool with templates
+- [GIMP](https://www.gimp.org/) - Free open-source image editor
+- [Adobe Photoshop](https://www.adobe.com/products/photoshop.html) - Professional image editor
