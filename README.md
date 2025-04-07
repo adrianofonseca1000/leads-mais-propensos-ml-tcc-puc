@@ -13,14 +13,35 @@ Com a solução, os times de vendas, planejamento e marketing podem priorizar os
 O projeto foi organizado de forma modular em uma estrutura de pacotes Python:
 
 ```
-├── src/                    # Código fonte
-│   ├── data/               # Módulos para coleta de dados
-│   ├── features/           # Módulos para processamento e engenharia de features
-│   ├── models/             # Módulos para treinamento e avaliação de modelos
-│   └── visualization/      # Módulos para visualização de dados
-├── main.py                 # Script principal para executar o pipeline completo
-├── requirements.txt        # Dependências do projeto
-└── .env.example            # Exemplo de configuração de variáveis de ambiente
+leads-mais-propensos-ml-tcc-puc/
+│
+├── data/
+│   ├── raw/             # Original raw data (e.g., data.csv)
+│   └── processed/       # Processed data (e.g., data_ptd.csv, data_aed.csv)
+│
+├── notebooks/           # Original Jupyter notebooks for reference
+│   ├── 01 - Coleta de dados.ipynb
+│   ├── 02 - Processamento e tratamento dos dados.ipynb
+│   ├── 03 - Análise e exploração dos dados.ipynb
+│   └── 04 - Aplicação e avaliação de Modelos Machine Learning.ipynb
+│
+├── reports/             # Generated reports and figures
+│   └── figures/         # Plots and visualizations (e.g., descritiva*.html)
+│
+├── models/              # Trained models outputs
+│
+├── src/                 # Source code for the project
+│   ├── __init__.py
+│   ├── data_processing.py  # Code from notebook 02
+│   ├── exploratory_analysis.py # Code from notebook 03
+│   ├── modeling.py         # Code from notebook 04
+│   ├── predict.py          # Script for making predictions with a trained model
+│   ├── train.py            # Script for training the model
+│   └── utils.py            # Utility functions (shared code)
+│
+├── .gitignore           # Specifies intentionally untracked files that Git should ignore
+├── requirements.txt     # Project dependencies
+└── README.md            # Updated project documentation
 ```
 
 ## Instalação
