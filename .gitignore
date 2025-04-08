@@ -49,6 +49,7 @@ coverage.xml
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
 # Environment variables
 .env
@@ -94,4 +95,11 @@ tmp/
 # Documentation generated files
 docs/_build/
 docs/auto_examples/
-docs/modules/generated/ 
+docs/modules/generated/
+
+# HTML and generated files that should not affect language statistics
+**/*.html
+site/
+_site/
+**/_build/
+**/_autosummary/ 

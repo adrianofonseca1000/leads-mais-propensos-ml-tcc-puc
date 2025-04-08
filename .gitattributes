@@ -1,0 +1,17 @@
+# Force correct language detection
+*.py linguist-language=Python
+*.ipynb linguist-language=Jupyter
+
+# Correctly identify Python and Jupyter files
+*.py linguist-detectable=true
+*.ipynb linguist-detectable=true
+
+# Mark HTML files as generated to exclude from language statistics
+*.html linguist-generated=true
+*.htm linguist-generated=true
+
+# Mark any documentation files as documentation
+/docs/* linguist-documentation=true
+
+# Ensure Jupyter notebooks are properly detected
+*.ipynb linguist-language=Jupyter 
