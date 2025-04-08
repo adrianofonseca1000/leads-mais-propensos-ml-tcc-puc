@@ -1,86 +1,162 @@
+#!/usr/bin/env python
 """
-Script principal para execução do pipeline completo de análise preditiva de Leads.
-
-Este script executa todas as etapas do pipeline:
-1. Coleta de dados
-2. Processamento e tratamento dos dados
-3. Visualização e análise exploratória
-4. Treinamento e avaliação de modelos
-
-Uso:
-    python main.py [etapa]
-
-Onde [etapa] pode ser:
-    collect - Apenas coleta de dados
-    process - Apenas processamento de dados
-    visualize - Apenas visualização de dados
-    train - Apenas treinamento de modelos
-    all - Executa todas as etapas (padrão)
+Main entry point for the Lead Scoring project.
+Provides a command-line interface for the complete pipeline.
 """
-import os
+
+import argparse
+import logging
+import logging.config
 import sys
-import time
-from src.data.data_collection import collect_all_data
-from src.features.data_processing import process_data
-from src.visualization.data_visualization import create_visualizations
-from src.models.model_training import train_and_evaluate
+from pathlib import Path
+import numpy as np
 
-def main(step='all'):
-    """
-    Executa o pipeline de análise preditiva de Leads.
-    
-    Args:
-        step: Etapa a ser executada: 'collect', 'process', 'visualize', 'train' ou 'all'.
-    """
-    # Marcar o tempo de início
-    start_time = time.time()
-    
-    # Executar etapas conforme solicitado
-    if step in ['collect', 'all']:
-        print("\n=== Etapa 1: Coleta de dados ===")
-        data = collect_all_data()
-        print(f"Dados coletados: {data.shape[0]} linhas e {data.shape[1]} colunas")
-    
-    if step in ['process', 'all']:
-        print("\n=== Etapa 2: Processamento e tratamento dos dados ===")
-        input_file = 'data_raw.csv' if os.path.exists('data_raw.csv') else 'data.csv'
-        data = process_data(input_file, 'data_processed.csv')
-        print(f"Dados processados: {data.shape[0]} linhas e {data.shape[1]} colunas")
-    
-    if step in ['visualize', 'all']:
-        print("\n=== Etapa 3: Visualização e análise exploratória ===")
-        create_visualizations('data_processed.csv', 'visualizations')
-    
-    if step in ['train', 'all']:
-        print("\n=== Etapa 4: Treinamento e avaliação de modelos ===")
-        results = train_and_evaluate('data_processed.csv', 'models')
+from src.config import LOGGING_CONFIG, RAW_DATA_FILE, INTERMEDIATE_DATA_FILE, FINAL_DATA_FILE
+from src.data.pipeline import run_data_pipeline
+from src.train import train_model
+from src.predict import predict, Predictor
+
+# Configure logging
+logging.config.dictConfig(LOGGING_CONFIG)
+logger = logging.getLogger(__name__)
+
+def process_data(args):
+    """Run the data processing pipeline."""
+    logger.info("Starting data processing")
+    try:
+        # Process from raw to intermediate
+        result1 = run_data_pipeline(
+            input_file=RAW_DATA_FILE,
+            output_file=INTERMEDIATE_DATA_FILE
+        )
+        logger.info(f"Processed raw data to intermediate: {result1['data'].shape}")
+
+        # Process from intermediate to final
+        result2 = run_data_pipeline(
+            input_file=INTERMEDIATE_DATA_FILE,
+            output_file=FINAL_DATA_FILE
+        )
+        logger.info(f"Processed intermediate data to final: {result2['data'].shape}")
         
-        # Mostrar resultados dos modelos
-        print("\nResultados dos modelos:")
-        for model_name, metrics in results.items():
-            print(f"\n{model_name}:")
-            print(f"  Accuracy: {metrics['accuracy']:.4f}")
-            print(f"  Precision: {metrics['precision']:.4f}")
-            print(f"  Recall: {metrics['recall']:.4f}")
-            print(f"  F1-score: {metrics['f1']:.4f}")
-            print(f"  AUC: {metrics['auc']:.4f}")
+        return True
+    except Exception as e:
+        logger.error(f"Data processing failed: {str(e)}")
+        return False
+
+def train_models(args):
+    """Train multiple machine learning models."""
+    logger.info("Starting model training")
+    results = {}
     
-    # Calcular o tempo total
-    elapsed_time = time.time() - start_time
-    print(f"\nTempo total de execução: {elapsed_time:.2f} segundos")
+    model_types = args.models.split(',') if args.models else ['random_forest', 'xgboost', 'logistic_regression']
+    
+    try:
+        for model_type in model_types:
+            logger.info(f"Training {model_type} model")
+            result = train_model(model_type)
+            results[model_type] = result
+            logger.info(f"{model_type} ROC AUC: {result['test_metrics']['roc_auc']:.4f}")
+        
+        # Find best model
+        best_model = max(results.items(), key=lambda x: x[1]['test_metrics']['roc_auc'])
+        logger.info(f"Best model: {best_model[0]} with ROC AUC: {best_model[1]['test_metrics']['roc_auc']:.4f}")
+        
+        return results
+    except Exception as e:
+        logger.error(f"Model training failed: {str(e)}")
+        return None
+
+def make_predictions(args):
+    """Make predictions using a trained model."""
+    logger.info("Starting prediction")
+    
+    try:
+        # Use specified model or default to random_forest
+        model_type = args.model or 'random_forest'
+        
+        # Get predictions
+        predictions = predict(
+            data=Path(args.input),
+            model_type=model_type,
+            return_proba=True
+        )
+        
+        # Save predictions if output file is specified
+        if args.output:
+            predictions.to_csv(args.output, index=False)
+            logger.info(f"Saved predictions to {args.output}")
+        
+        # Show top leads
+        top_n = min(args.top, len(predictions))
+        top_leads = predictions.sort_values(by='prob_1', ascending=False).head(top_n)
+        logger.info(f"Top {top_n} leads with highest conversion probability:")
+        logger.info(top_leads)
+        
+        return predictions
+    except Exception as e:
+        logger.error(f"Prediction failed: {str(e)}")
+        return None
+
+def full_pipeline(args):
+    """Run the complete pipeline: process data, train models, and make predictions."""
+    logger.info("Starting full pipeline")
+    
+    # Process data
+    if not process_data(args):
+        return False
+    
+    # Train models
+    results = train_models(args)
+    if not results:
+        return False
+    
+    # Make predictions
+    if args.input:
+        make_predictions(args)
+    
+    logger.info("Full pipeline completed successfully")
+    return True
+
+def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(description="Lead Scoring ML Pipeline")
+    subparsers = parser.add_subparsers(dest="command", help="Command to run")
+    
+    # Process data command
+    process_parser = subparsers.add_parser("process", help="Process data")
+    
+    # Train models command
+    train_parser = subparsers.add_parser("train", help="Train models")
+    train_parser.add_argument("--models", type=str, help="Comma-separated list of models to train")
+    
+    # Predict command
+    predict_parser = subparsers.add_parser("predict", help="Make predictions")
+    predict_parser.add_argument("--model", type=str, help="Model type to use")
+    predict_parser.add_argument("--input", type=str, required=True, help="Input data file")
+    predict_parser.add_argument("--output", type=str, help="Output predictions file")
+    predict_parser.add_argument("--top", type=int, default=5, help="Number of top leads to show")
+    
+    # Full pipeline command
+    pipeline_parser = subparsers.add_parser("pipeline", help="Run full pipeline")
+    pipeline_parser.add_argument("--models", type=str, help="Comma-separated list of models to train")
+    pipeline_parser.add_argument("--input", type=str, help="Input data file for predictions")
+    pipeline_parser.add_argument("--output", type=str, help="Output predictions file")
+    pipeline_parser.add_argument("--top", type=int, default=5, help="Number of top leads to show")
+    
+    args = parser.parse_args()
+    
+    if args.command == "process":
+        return process_data(args)
+    elif args.command == "train":
+        return train_models(args) is not None
+    elif args.command == "predict":
+        return make_predictions(args) is not None
+    elif args.command == "pipeline":
+        return full_pipeline(args)
+    else:
+        parser.print_help()
+        return True
 
 if __name__ == "__main__":
-    # Verificar argumentos da linha de comando
-    if len(sys.argv) > 1:
-        step = sys.argv[1].lower()
-        valid_steps = ['collect', 'process', 'visualize', 'train', 'all']
-        
-        if step not in valid_steps:
-            print(f"Etapa inválida: {step}")
-            print(f"Escolha uma das etapas válidas: {', '.join(valid_steps)}")
-            sys.exit(1)
-    else:
-        step = 'all'
-    
-    # Executar o pipeline
-    main(step) 
+    success = main()
+    sys.exit(0 if success else 1) 

@@ -1,88 +1,89 @@
-﻿# Lead Score Prediction
+﻿# 🚀 Lead Scoring ML Project
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
-[![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.3.0-orange)](https://scikit-learn.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<div align="center">
 
-> 🚀 Machine Learning system to predict the likelihood of leads converting to internet plan customers.
+![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)
+![Pandas](https://img.shields.io/badge/Pandas-2.0+-green?style=for-the-badge&logo=pandas)
+![Scikit-learn](https://img.shields.io/badge/ScikitLearn-1.3.0-orange?style=for-the-badge&logo=scikit-learn)
+![XGBoost](https://img.shields.io/badge/XGBoost-2.0-red?style=for-the-badge)
 
-<!-- 
-To add a banner image:
-1. Add your image to the 'images' directory
-2. Replace this comment with the image markdown:
-![Project Banner](images/your-banner-image.png)
--->
+</div>
 
-## Overview
+> Predict the likelihood of leads converting to internet plan customers using advanced machine learning techniques and SOLID architecture.
 
-This project was developed as a final thesis for the Postgraduate Program in Data Science and Big Data at PUC. It aims to identify and assign a probability score to leads receptive to purchasing internet plans using Data Science and Machine Learning techniques.
+## 📋 Overview
 
-With this solution, sales, planning, and marketing teams can prioritize leads with higher interest in internet plans.
+This project implements a modular and extensible machine learning pipeline for lead scoring. It processes raw data, performs feature engineering, trains multiple classification models with hyperparameter tuning, and provides actionable predictions to help prioritize leads with higher conversion potential.
 
-## 📋 Features
+## 🏗️ Architecture
 
-- **Data Collection**: Connection to databases to extract contact information, recharges, and services used by leads
-- **Data Processing**: Cleaning, transformation, and preparation of data for modeling
-- **Exploratory Analysis**: Generation of visualizations to understand data patterns
-- **ML Models**: Implementation of various classification models (Random Forest, SVM, Naive Bayes)
-- **Score Generation**: Probability scoring for each lead's conversion potential
+The project follows SOLID principles and uses object-oriented design patterns:
 
-## 🧮 ML Models Performance
+- **Abstraction**: Abstract interfaces for data handling and model implementation
+- **Encapsulation**: Proper encapsulation of functionality within classes
+- **Inheritance**: Class hierarchies for reusable functionality
+- **Polymorphism**: Interchangeable components with common interfaces
 
-| Model | Accuracy | Precision | Recall | F1-Score | AUC |
-|-------|----------|-----------|--------|----------|-----|
-| Random Forest | 0.89 | 0.87 | 0.93 | 0.90 | 0.92 |
-| SVM | 0.85 | 0.84 | 0.88 | 0.86 | 0.89 |
-| Logistic Regression | 0.82 | 0.80 | 0.85 | 0.82 | 0.86 |
+<div align="center">
 
-## 📁 Project Structure
+```mermaid
+graph TD
+    A[Raw Data] --> B[Data Loader]
+    B --> C[Data Processor]
+    C --> D[Data Transformer]
+    D --> E[Transformed Data]
+    E --> F[Model Training]
+    F --> G[Model Evaluation]
+    F --> H[Final Model]
+    H --> I[Predictions]
+```
+
+</div>
+
+## 🗂️ Project Structure
 
 ```
-leads-score-prediction/
-│
-├── data/                     # Data files
-│   ├── raw/                  # Original raw data
-│   └── processed/            # Processed data
-│
-├── notebooks/                # Jupyter notebooks
-│   ├── 01 - Data Collection.ipynb
-│   ├── 02 - Data Processing.ipynb
-│   ├── 03 - Exploratory Analysis.ipynb
-│   └── 04 - ML Models.ipynb
-│
-├── reports/                  # Generated reports
-│   └── figures/              # Visualizations
-│
+.
+├── data/                      # Data directory
+│   ├── raw/                  # Raw data files
+│   └── processed/            # Processed data files
 ├── models/                   # Trained models
-│
+├── notebooks/                # Jupyter notebooks
 ├── src/                      # Source code
-│   ├── __init__.py
-│   ├── data_processing.py    # Data processing pipeline
-│   ├── exploratory_analysis.py # Exploratory data analysis
-│   ├── modeling.py           # Model training and evaluation
-│   ├── predict.py            # Making predictions
-│   ├── train.py              # Training pipeline
-│   └── utils.py              # Utility functions
-│
-├── .env.example              # Example environment variables
-├── .gitignore                # Git ignore file
+│   ├── data/                # Data processing modules
+│   │   ├── loader.py        # Data loading
+│   │   ├── processor.py     # Data processing
+│   │   ├── transformer.py   # Feature transformation
+│   │   ├── validator.py     # Data validation
+│   │   └── pipeline.py      # Data pipeline
+│   ├── models/              # Model implementations
+│   │   ├── base.py          # Base model interface
+│   │   ├── random_forest.py
+│   │   ├── xgboost.py
+│   │   ├── logistic_regression.py
+│   │   └── factory.py       # Model factory
+│   ├── config.py            # Configuration
+│   ├── train.py             # Training module
+│   └── predict.py           # Prediction module
+├── tests/                    # Test files
 ├── requirements.txt          # Dependencies
-└── README.md                 # Project documentation
+└── README.md                # Documentation
 ```
 
-## 🛠️ Installation
+## 🚀 Quick Start
+
+### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/leads-score-prediction.git
-cd leads-score-prediction
+git clone <repository-url>
+cd lead-scoring-ml
 ```
 
-2. Create and activate a virtual environment:
+2. Create a virtual environment:
 ```bash
 python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 3. Install dependencies:
@@ -90,72 +91,125 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-4. Configure environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your database credentials
+### Data Flow
+
+1. Raw data (`data/raw/data_ptd.csv`) is processed and cleaned
+2. Processed data is saved to `data/processed/data_aed.csv`
+3. Final transformed data is saved to `data/processed/data.csv`
+4. Models are trained on the final data
+5. Trained models are saved to `models/trained/`
+
+## 📊 Usage Examples
+
+### Processing Data
+
+```python
+from src.data.pipeline import run_data_pipeline
+
+# Process data from raw to final format
+result = run_data_pipeline()
+print(f"Processed data shape: {result['data'].shape}")
 ```
 
-## 📊 Usage
+### Training Models
 
-### Full Pipeline
+```python
+from src.train import train_model
 
-Run the complete pipeline:
-```bash
-python main.py
+# Train a Random Forest model with hyperparameter tuning
+rf_results = train_model('random_forest')
+print(f"Random Forest ROC AUC: {rf_results['test_metrics']['roc_auc']:.4f}")
+
+# Train XGBoost model
+xgb_results = train_model('xgboost')
+print(f"XGBoost ROC AUC: {xgb_results['test_metrics']['roc_auc']:.4f}")
 ```
 
-### Specific Steps
+### Making Predictions
 
-For individual steps:
-```bash
-python main.py collect    # Data collection only
-python main.py process    # Data processing only
-python main.py visualize  # Data visualization only
-python main.py train      # Model training only
+```python
+from src.predict import predict
+from pathlib import Path
+
+# Get probability predictions for new leads
+predictions = predict(
+    data=Path("data/raw/new_leads.csv"),
+    model_type="random_forest",
+    return_proba=True
+)
+
+# Print top 5 leads with highest conversion probability
+top_leads = predictions.sort_values(by='prob_1', ascending=False).head()
+print("Top leads for follow-up:")
+print(top_leads)
 ```
 
-### Predictions
+## 🧠 ML Models
 
-Make predictions with new data:
+| Model | Description | Hyperparameter Tuning |
+|-------|-------------|----------------------|
+| **Random Forest** | Ensemble method using multiple decision trees | GridSearchCV with cross-validation |
+| **XGBoost** | Gradient boosting implementation optimized for speed and performance | GridSearchCV with cross-validation |
+| **Logistic Regression** | Linear model for classification | GridSearchCV with cross-validation |
+
+## 🛠️ Development
+
+### Code Style
+
+The project follows PEP 8 guidelines. To check and format code:
+
 ```bash
-python -m src.predict models/best_model.pkl data/raw/new_leads.csv predictions.csv
+# Check code style
+flake8 src/
+
+# Format code
+black src/
+
+# Check types
+mypy src/
 ```
 
-## 📈 Analysis Pipeline
+### Testing
 
-The project follows a predictive analytics pipeline with the following stages:
+Run tests with pytest:
 
-1. **Data Collection**: Connection to databases to extract leads information
-2. **Data Processing**: Cleaning, transformation, and feature engineering
-3. **Exploratory Analysis**: Visualization for understanding patterns
-4. **Model Training**: Training different classification models
-5. **Evaluation**: Performance assessment and model selection
-6. **Prediction**: Generating scores for new leads
+```bash
+pytest tests/
+```
 
-## 🧪 Technologies Used
+## 📈 Performance Metrics
 
-- **Data Collection**: Python, SQL, pyodbc
-- **Data Processing**: pandas, numpy, scikit-learn
-- **Visualization**: matplotlib, seaborn
-- **Modeling**: scikit-learn, joblib
+Example performance metrics from model evaluation:
 
-## 📊 Data Analysis
+| Model | Accuracy | Precision | Recall | F1-Score | ROC AUC |
+|-------|----------|-----------|--------|----------|---------|
+| Random Forest | 0.6516 | 0.6947 | 0.6886 | 0.6916 | 0.7100 |
+| SVM | 0.6360 | 0.6593 | 0.6352 | 0.6470 | 0.4400 |
+| Gaussian Naive Bayes | 0.6666 | 0.6352 | 0.6352 | 0.6352 | 0.6300 |
 
-This study considers leads across Brazil during the third and fourth quarters of 2021.
+O Random Forest Classifier apresentou o melhor desempenho geral, com:
+- Maior ROC AUC (0.71)
+- Melhor F1-Score (0.6916)
+- Melhor balanceamento entre precisão e recall
+- Boa capacidade de generalização
 
-## 📜 License
+## ✨ Features
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+- **Modular Design**: Components can be easily extended or replaced
+- **Hyperparameter Tuning**: Automatic optimization of model parameters
+- **Data Validation**: Validation at each stage of processing
+- **Factory Pattern**: Easy creation of different components
+- **Type Hints**: Comprehensive type annotations for better tooling
+- **Logging**: Detailed logging throughout the pipeline
 
-## 👤 Author
+## 📄 License
 
-Developed as part of a postgraduate thesis at PUC.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
 ---
 
-<p align="center">
-  Made with ❤️ by Adriano Fonseca
-</p>
-
----
+<div align="center">
+  <p>
+    <a href="https://github.com/adrianofonseca1000">Made with ❤️</a>
+  </p>
+</div>
